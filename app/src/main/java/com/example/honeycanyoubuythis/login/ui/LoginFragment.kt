@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.databinding.LoginFragmentBinding
 
 class LoginFragment: Fragment() {
@@ -30,6 +31,9 @@ class LoginFragment: Fragment() {
         with(binding){
             usernameField.addTextChangedListener(loginTextWatcher)
             passwordField.addTextChangedListener(loginTextWatcher)
+            notRegisteredText.setOnClickListener {
+                navController.navigate(R.id.action_loginFragment_to_registerFragment)
+            }
         }
 
     }
