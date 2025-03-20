@@ -8,14 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.honeycanyoubuythis.R
+import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.databinding.LoginFragmentBinding
+import com.example.honeycanyoubuythis.login.viewmodel.LoginViewModel
+import com.example.honeycanyoubuythis.login.viewmodel.LoginViewModelFactory
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
     private var _binding: LoginFragmentBinding? = null
@@ -23,6 +29,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var navController: NavController
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,6 +37,9 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = LoginFragmentBinding.inflate(inflater, container, false)
+        val currentUserDao = AppDatabase.getInstance(requireContext()).currentUserDao()
+        val factory = LoginViewModelFactory(currentUserDao)
+        loginViewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
         return binding.root
     }
 
@@ -38,6 +48,11 @@ class LoginFragment : Fragment() {
         auth = Firebase.auth
         navController = findNavController()
 
+        lifecycleScope.launch {
+            if (loginViewModel.checkIfLoggedIn()) {
+                updateUI()
+            }
+        }
         with(binding) {
             emailField.addTextChangedListener(loginTextWatcher)
             passwordField.addTextChangedListener(loginTextWatcher)
@@ -61,7 +76,6 @@ class LoginFragment : Fragment() {
 
                 loginButton.isEnabled = email.isNotEmpty() && password.isNotEmpty()
             }
-
         }
 
         override fun afterTextChanged(s: Editable?) {}
@@ -72,28 +86,25 @@ class LoginFragment : Fragment() {
             val email = emailField.text.toString()
             val password = passwordField.text.toString()
 
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        val user = auth.currentUser
-                        updateUI(user)
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            task.exception.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+            lifecycleScope.launch {
+                if (loginViewModel.performLogin(email, password)) {
+                    updateUI()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Login Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+            }
         }
-
-
     }
 
-    private fun updateUI(user: FirebaseUser?) {
-        if (user != null) {
-            val navController = findNavController()
-            navController.navigate(R.id.action_loginFragment_to_homeFragment)
-        }
+    private fun updateUI() {
+        navController = findNavController()
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.loginFragment, true)
+            .build()
+        navController.navigate(R.id.action_loginFragment_to_homeFragment, null, navOptions)
     }
 }
