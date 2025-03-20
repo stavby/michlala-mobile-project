@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
 import com.example.honeycanyoubuythis.databinding.HomeFragmentBinding
 import kotlinx.coroutines.launch
@@ -19,8 +20,9 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var homeViewModel: HomeViewModel
+
     private lateinit var adapter: GroceryListAdapter
+    private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +30,9 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
-        val groceryListRepository = GroceryListRepository()
+        val appDatabase = AppDatabase.getInstance(requireContext())
+        val groceryListDao = appDatabase.groceryListDao()
+        val groceryListRepository = GroceryListRepository(groceryListDao)
         val factory = HomeViewModelFactory(groceryListRepository)
         homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
         return binding.root
@@ -37,21 +41,23 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = GroceryListAdapter(emptyList())
-        binding.groceryListsRecyclerView.adapter = adapter
-        binding.groceryListsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        observeGroceryLists()
-        binding.fabAddGroceryList.setOnClickListener {
-            showAddGroceryListDialog()
+
+        with(binding) {
+            groceryListsRecyclerView.adapter = adapter
+            groceryListsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            fabAddGroceryList.setOnClickListener {
+                showAddGroceryListDialog()
+            }
         }
+
+        observeGroceryLists()
     }
+
     private fun observeGroceryLists() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.groceryLists.collect { groceryLists ->
                     adapter.updateData(groceryLists)
-                    if (groceryLists.isNotEmpty()) {
-                        homeViewModel.addGroceryItem(groceryLists[0].id, "Test item 1")
-                    }
                 }
             }
         }
@@ -79,6 +85,7 @@ class HomeFragment : Fragment() {
 
         builder.show()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -1,23 +1,29 @@
 package com.example.honeycanyoubuythis.database.groceryList
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-@ProvidedTypeConverter
-class GroceryListTypeConverters {
+class GroceryListTypeConverters { //Removed ProvidedTypeConverter
     private val gson = Gson()
 
     @TypeConverter
-    fun fromGroceryItemList(value: List<GroceryItem>): String {
-        val type = object : TypeToken<List<GroceryItem>>() {}.type
-        return gson.toJson(value, type)
+    fun fromGroceryItemList(value: List<GroceryItem>?): String? { // added null handling
+        return if (value == null) {
+            null
+        } else {
+            val type = object : TypeToken<List<GroceryItem>>() {}.type
+            gson.toJson(value, type)
+        }
     }
 
     @TypeConverter
-    fun toGroceryItemList(value: String): List<GroceryItem> {
-        val type = object : TypeToken<List<GroceryItem>>() {}.type
-        return gson.fromJson(value, type)
+    fun toGroceryItemList(value: String?): List<GroceryItem>? { // added null handling
+        return if (value == null) {
+            null
+        } else {
+            val type = object : TypeToken<List<GroceryItem>>() {}.type
+            gson.fromJson(value, type)
+        }
     }
 }

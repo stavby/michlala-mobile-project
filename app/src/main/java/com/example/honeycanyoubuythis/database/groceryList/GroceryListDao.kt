@@ -4,16 +4,33 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.TypeConverters
 import kotlinx.coroutines.flow.Flow
 
 @Dao
+@TypeConverters(GroceryListTypeConverters::class)
 interface GroceryListDao {
     @Query("SELECT * FROM grocery_list_table")
-    fun getAllGroceryLists(): Flow<List<LocalGroceryList>>
+    fun getGroceryLists(): Flow<List<LocalGroceryList>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(groceryLists: List<LocalGroceryList>)
+    suspend fun addAllGroceryLists(groceryLists: List<LocalGroceryList>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroceryList(groceryLists: LocalGroceryList)
+    suspend fun addGroceryList(groceryLists: LocalGroceryList)
+
+    @Transaction
+    @Query("SELECT * FROM grocery_list_table WHERE id = :groceryListId")
+    suspend fun getGroceryListWithItems(groceryListId: String): LocalGroceryList?
+
+    @Transaction
+    suspend fun addItemToGroceryList(groceryListId: String, groceryItem: GroceryItem) {
+        val groceryList = getGroceryListWithItems(groceryListId)
+        groceryList?.let {
+            val updatedGroceryItems = it.groceryItems.toMutableList()
+            updatedGroceryItems.add(groceryItem)
+            addGroceryList(it.copy(groceryItems = updatedGroceryItems))
+        }
+    }
 }
