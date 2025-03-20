@@ -11,7 +11,7 @@ interface CurrentUserDao {
     suspend fun insert(user: CurrentUser)
 
     @Query("SELECT * FROM current_user WHERE id = 1")
-    suspend fun getCurrentUser(): CurrentUser
+    suspend fun getCurrentUser(): CurrentUser?
 
     @Query("DELETE FROM current_user")
     suspend fun deleteCurrentUser()

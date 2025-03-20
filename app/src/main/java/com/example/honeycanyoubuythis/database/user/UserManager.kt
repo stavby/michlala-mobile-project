@@ -6,7 +6,7 @@ import com.example.honeycanyoubuythis.database.AppDatabase
 class UserManager private constructor(context: Context) {
     private val currentUserDao = AppDatabase.getInstance(context).currentUserDao()
 
-    suspend fun saveUser(email: String, displayName: String) {
+    suspend fun setUser(email: String, displayName: String) {
         currentUserDao.insert(CurrentUser(email = email, displayName = displayName))
     }
 
@@ -18,7 +18,7 @@ class UserManager private constructor(context: Context) {
         return currentUserDao.getCurrentUser()
     }
 
-    suspend fun clearUserId() {
+    suspend fun clearUser() {
         currentUserDao.deleteCurrentUser()
     }
 

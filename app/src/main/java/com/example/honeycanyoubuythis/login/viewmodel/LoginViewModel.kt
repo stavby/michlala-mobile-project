@@ -29,7 +29,7 @@ class LoginViewModel(private val currentUserDao: CurrentUserDao) : ViewModel() {
         }
     }
 
-    suspend fun checkIfLoggedIn(): Boolean  = currentUserDao.getCurrentUser().email.isNotEmpty()
+    suspend fun checkIfLoggedIn(): Boolean  = currentUserDao.getCurrentUser() != null
 
     private suspend fun fetchAndSaveUserData(userId: String) {
         try {
@@ -38,14 +38,13 @@ class LoginViewModel(private val currentUserDao: CurrentUserDao) : ViewModel() {
                 val userData = documentSnapshot.data
                 val email = userData?.get("email") as? String
                 val displayName = userData?.get("displayName") as? String
-                val user = email?.let {
-                    CurrentUser(
+                if (email != null && displayName != null){
+                    val user = CurrentUser(
                         id = 1,
-                        email = it,
-                        displayName = displayName ?: ""
+                        email = email,
+                        displayName = displayName
                     )
-                }
-                if (user != null) {
+
                     currentUserDao.insert(user)
                     Log.d("LoginViewModel", "User data fetched and saved successfully.")
                 }
