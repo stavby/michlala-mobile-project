@@ -105,6 +105,6 @@ class LoginFragment : Fragment() {
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.loginFragment, true)
             .build()
-        navController.navigate(R.id.action_loginFragment_to_homeFragment, null, navOptions)
+        navController.navigate(R.id.action_loginFragment_to_profileFragment, null, navOptions)
     }
 }

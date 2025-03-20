@@ -91,7 +91,7 @@ class RegisterFragment : Fragment() {
                 .setPopUpTo(R.id.loginFragment, true)
                 .build()
 
-            navController.navigate(R.id.action_registerFragment_to_homeFragment, null, navOptions)
+            navController.navigate(R.id.action_registerFragment_to_profileFragment, null, navOptions)
         } else {
             Toast.makeText(
                 requireContext(),
