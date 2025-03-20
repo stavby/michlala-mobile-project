@@ -29,6 +29,8 @@ class LoginViewModel(private val currentUserDao: CurrentUserDao) : ViewModel() {
         }
     }
 
+    suspend fun checkIfLoggedIn(): Boolean  = currentUserDao.getCurrentUser().email.isNotEmpty()
+
     private suspend fun fetchAndSaveUserData(userId: String) {
         try {
             val documentSnapshot = db.collection("user").document(userId).get().await()

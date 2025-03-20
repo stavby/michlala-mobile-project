@@ -48,6 +48,11 @@ class LoginFragment : Fragment() {
         auth = Firebase.auth
         navController = findNavController()
 
+        lifecycleScope.launch {
+            if (loginViewModel.checkIfLoggedIn()) {
+                updateUI()
+            }
+        }
         with(binding) {
             emailField.addTextChangedListener(loginTextWatcher)
             passwordField.addTextChangedListener(loginTextWatcher)
