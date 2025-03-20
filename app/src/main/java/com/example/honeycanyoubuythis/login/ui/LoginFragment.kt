@@ -91,7 +91,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        println("got here $user")
         if (user != null) {
             val navController = findNavController()
             navController.navigate(R.id.action_loginFragment_to_homeFragment)
