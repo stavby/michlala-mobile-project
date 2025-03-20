@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 class HomeViewModel(
     private val groceryListRepository: GroceryListRepository,
@@ -50,7 +51,8 @@ class HomeViewModel(
 
     fun addGroceryList(title: String) {
         viewModelScope.launch {
-            val list = GroceryList(title = title)
+            val id = UUID.randomUUID().toString()
+            val list = GroceryList(id = id, title = title)
             groceryListRepository.addGroceryList(list)
         }
     }

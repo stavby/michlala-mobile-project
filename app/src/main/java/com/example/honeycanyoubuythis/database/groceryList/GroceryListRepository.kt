@@ -9,6 +9,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 class GroceryListRepository(
     private val groceryListDao: GroceryListDao
@@ -30,7 +31,8 @@ class GroceryListRepository(
     suspend fun addGroceryList(groceryList: GroceryList) {
         groceryListDao.addGroceryList(groceryList.toLocalGroceryList())
         try {
-            db.collection("groceryList").add(groceryList).await()
+            val groceryListRef = db.collection("groceryList").document(groceryList.id)
+            groceryListRef.set(groceryList).await()
         } catch (e: Exception) {
             Log.e("GroceryListRepository", "Error adding grocery list to firebase.", e)
         }
@@ -50,14 +52,12 @@ class GroceryListRepository(
         }
     }
 
-    //Add multiple grocery lists to room
     suspend fun addAllGroceryLists(groceryLists: List<GroceryList>) {
         val localGroceryLists = groceryLists.map { it.toLocalGroceryList() }
         groceryListDao.addAllGroceryLists(localGroceryLists)
     }
 }
 
-// Extension function to convert GroceryList to LocalGroceryList
 fun GroceryList.toLocalGroceryList(): LocalGroceryList {
     return LocalGroceryList(
         id = this.id,
