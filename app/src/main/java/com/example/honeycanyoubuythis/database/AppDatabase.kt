@@ -4,14 +4,19 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.honeycanyoubuythis.database.groceryList.GroceryListDao
+import com.example.honeycanyoubuythis.database.groceryList.GroceryListTypeConverters
+import com.example.honeycanyoubuythis.database.groceryList.LocalGroceryList
 import com.example.honeycanyoubuythis.database.user.CurrentUser
 import com.example.honeycanyoubuythis.database.user.CurrentUserDao
 
-@Database(entities = [CurrentUser::class], version = 1, exportSchema = false)
+@Database(entities = [CurrentUser::class, LocalGroceryList::class], version = 1, exportSchema = false)
+@TypeConverters(GroceryListTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun currentUserDao(): CurrentUserDao
-
+    abstract fun groceryListDao(): GroceryListDao
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
