@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.honeycanyoubuythis.R
-import com.example.honeycanyoubuythis.database.groceryList.GroceryList
 import com.example.honeycanyoubuythis.databinding.GroceryListBinding
+import com.example.honeycanyoubuythis.model.GroceryList
 
-class GroceryListAdapter(private val groceryLists: List<GroceryList>) :
+class GroceryListAdapter(private var groceryLists: List<GroceryList>) :
     RecyclerView.Adapter<GroceryListAdapter.GroceryListViewHolder>() {
     class GroceryListViewHolder(private val binding: GroceryListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -33,4 +33,9 @@ class GroceryListAdapter(private val groceryLists: List<GroceryList>) :
     }
 
     override fun getItemCount(): Int = groceryLists.size
+
+    fun updateData(newGroceryLists: List<GroceryList>) {
+        groceryLists = newGroceryLists
+        notifyDataSetChanged()
+    }
 }
