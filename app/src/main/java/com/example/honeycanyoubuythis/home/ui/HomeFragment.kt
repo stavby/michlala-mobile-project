@@ -21,7 +21,7 @@ class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: GroceryListAdapter
+    private lateinit var adapter: GroceryListsAdapter
     private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(
@@ -40,7 +40,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = GroceryListAdapter(emptyList())
+        adapter = GroceryListsAdapter(emptyList())
 
         with(binding) {
             groceryListsRecyclerView.adapter = adapter

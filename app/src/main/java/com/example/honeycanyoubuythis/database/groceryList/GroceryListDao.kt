@@ -33,4 +33,24 @@ interface GroceryListDao {
             addGroceryList(it.copy(groceryItems = updatedGroceryItems))
         }
     }
+
+    @Transaction
+    suspend fun removeItemFromGroceryList(groceryListId: String, groceryItem: GroceryItem) {
+        val groceryList = getGroceryListWithItems(groceryListId)
+        groceryList?.let {
+            val updatedGroceryItems = it.groceryItems.toMutableList()
+            updatedGroceryItems.remove(groceryItem)
+            addGroceryList(it.copy(groceryItems = updatedGroceryItems))
+        }
+    }
+
+    @Transaction
+    suspend fun updateItemInGroceryList(groceryListId: String, index: Int, groceryItem: GroceryItem) {
+        val groceryList = getGroceryListWithItems(groceryListId)
+        groceryList?.let {
+            val updatedGroceryItems = it.groceryItems.toMutableList()
+            updatedGroceryItems.set(index, groceryItem)
+            addGroceryList(it.copy(groceryItems = updatedGroceryItems))
+        }
+    }
 }

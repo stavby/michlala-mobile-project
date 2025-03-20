@@ -9,7 +9,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
 
 class GroceryListRepository(
     private val groceryListDao: GroceryListDao
@@ -48,7 +47,21 @@ class GroceryListRepository(
                 FieldValue.arrayUnion(groceryItem)
             ).await()
         } catch (e: Exception) {
-            Log.e("GroceryListRepository", "Error adding item to grocery list to firebase.", e)
+            Log.e("GroceryListRepository", "Error adding item to grocery list in firebase.", e)
+        }
+    }
+
+    suspend fun removeItemFromGroceryList(groceryListId: String, groceryItem: GroceryItem) {
+        groceryListDao.removeItemFromGroceryList(groceryListId, groceryItem)
+        try {
+            val groceryListRef = db.collection("groceryList").document(groceryListId)
+
+            groceryListRef.update(
+                "items",
+                FieldValue.arrayRemove(groceryItem)
+            ).await()
+        } catch (e: Exception) {
+            Log.e("GroceryListRepository", "Error removing item from grocery list in firebase.", e)
         }
     }
 

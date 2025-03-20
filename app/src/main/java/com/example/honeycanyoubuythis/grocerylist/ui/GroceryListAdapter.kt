@@ -1,4 +1,4 @@
-package com.example.honeycanyoubuythis.home.ui
+package com.example.honeycanyoubuythis.grocerylist.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.databinding.GroceryListBinding
 import com.example.honeycanyoubuythis.model.GroceryList
 
-class GroceryListAdapter(private var groceryLists: List<GroceryList>) :
+class GroceryListAdapter(private var groceryList: GroceryList) :
     RecyclerView.Adapter<GroceryListAdapter.GroceryListViewHolder>() {
     class GroceryListViewHolder(private val binding: GroceryListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -28,14 +28,13 @@ class GroceryListAdapter(private var groceryLists: List<GroceryList>) :
     }
 
     override fun onBindViewHolder(holder: GroceryListViewHolder, position: Int) {
-        val groceryList = groceryLists[position]
         holder.bind(groceryList)
     }
 
-    override fun getItemCount(): Int = groceryLists.size
+    override fun getItemCount(): Int = groceryList.itemCount
 
-    fun updateData(newGroceryLists: List<GroceryList>) {
-        groceryLists = newGroceryLists
+    fun updateData(newGroceryList: GroceryList) {
+        groceryList = newGroceryList
         notifyDataSetChanged()
     }
 }
