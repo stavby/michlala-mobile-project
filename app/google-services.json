@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "741733902262",
+    "firebase_url": "https://honey-can-you-buy-this-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "honey-can-you-buy-this",
+    "storage_bucket": "honey-can-you-buy-this.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741733902262:android:3d74accb231b0be2aa4317",
+        "android_client_info": {
+          "package_name": "com.example.honeycanyoubuythis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHged38P85SYEoYQEzcLb9gfpfgdxoQHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
