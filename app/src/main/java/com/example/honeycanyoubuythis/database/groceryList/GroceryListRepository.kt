@@ -58,5 +58,4 @@ class GroceryListRepository {
             Log.e("GroceryListRepository", "Error adding item to grocery list.", e)
         }
     }
-
 }
