@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 @TypeConverters(GroceryListTypeConverters::class)
 interface GroceryListDao {
-    @Query("SELECT * FROM grocery_list_table")
+    @Query("SELECT * FROM grocery_list")
     fun getGroceryLists(): Flow<List<LocalGroceryList>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,7 +21,7 @@ interface GroceryListDao {
     suspend fun addGroceryList(groceryLists: LocalGroceryList)
 
     @Transaction
-    @Query("SELECT * FROM grocery_list_table WHERE id = :groceryListId")
+    @Query("SELECT * FROM grocery_list WHERE id = :groceryListId")
     suspend fun getGroceryListWithItems(groceryListId: String): LocalGroceryList?
 
     @Transaction

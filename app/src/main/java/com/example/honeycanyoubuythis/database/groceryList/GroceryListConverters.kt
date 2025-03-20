@@ -4,11 +4,11 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class GroceryListTypeConverters { //Removed ProvidedTypeConverter
+class GroceryListTypeConverters {
     private val gson = Gson()
 
     @TypeConverter
-    fun fromGroceryItemList(value: List<GroceryItem>?): String? { // added null handling
+    fun fromGroceryItemList(value: List<GroceryItem>?): String? {
         return if (value == null) {
             null
         } else {
@@ -18,7 +18,7 @@ class GroceryListTypeConverters { //Removed ProvidedTypeConverter
     }
 
     @TypeConverter
-    fun toGroceryItemList(value: String?): List<GroceryItem>? { // added null handling
+    fun toGroceryItemList(value: String?): List<GroceryItem>? {
         return if (value == null) {
             null
         } else {
