@@ -4,7 +4,8 @@
     <string name="password_hint">Password</string>
     <string name="login_title">Sign in</string>
     <string name="home_title">Grocery Lists</string>
-    <string name="weather_text">What a time to go shopping! The weather is </string>
+    <string name="good_weather_text">What a time to go shopping!</string>
+    <string name="bad_weather_text">This might not be the best time for shopping</string>
     <string name="register_button">Haven\'t registered yet?</string>
     <string name="register_title">Register</string>
     <string name="display_name_hint">Display name</string>

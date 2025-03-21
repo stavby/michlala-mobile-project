@@ -16,6 +16,7 @@ constraintlayout = "2.1.4"
 navigationFragmentKtx = "2.8.9"
 navigationUiKtx = "2.8.9"
 firebaseAuthKtx = "23.2.0"
+okhttp = "4.11.0"
 roomCommon = "2.6.1"
 roomKtx = "2.6.1"
 firebaseFirestoreKtx = "25.1.2"
@@ -43,6 +44,7 @@ google-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-aut
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
