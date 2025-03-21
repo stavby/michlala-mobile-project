@@ -22,7 +22,7 @@
         android:id="@+id/registerFragment"
         android:name="com.example.honeycanyoubuythis.login.ui.RegisterFragment"
         android:label="RegisterFragment"
-        tools:layout="@layout/registration_fragment" >
+        tools:layout="@layout/registration_fragment">
         <action
             android:id="@+id/action_registerFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -38,11 +38,11 @@
     </fragment>
     <fragment
         android:id="@+id/groceryListFragment"
-        android:name="com.example.honeycanyoubuythis.home.ui.GroceryListFragment"
+        android:name="com.example.honeycanyoubuythis.grocerylist.ui.GroceryListFragment"
         android:label="GroceryListFragment"
         tools:layout="@layout/grocery_list_fragment">
-        <action
-            android:id="@+id/action_groceryListFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+        <argument
+            android:name="groceryList"
+            app:argType="com.example.honeycanyoubuythis.model.GroceryList" />
     </fragment>
 </navigation>

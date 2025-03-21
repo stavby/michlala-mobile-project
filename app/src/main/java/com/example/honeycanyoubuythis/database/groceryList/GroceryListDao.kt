@@ -25,6 +25,10 @@ interface GroceryListDao {
     suspend fun getGroceryListWithItems(groceryListId: String): LocalGroceryList?
 
     @Transaction
+    @Query("SELECT * FROM grocery_list WHERE id = :groceryListId")
+    fun getFlowGroceryListWithItems(groceryListId: String): Flow<LocalGroceryList>
+
+    @Transaction
     suspend fun addItemToGroceryList(groceryListId: String, groceryItem: GroceryItem) {
         val groceryList = getGroceryListWithItems(groceryListId)
         groceryList?.let {

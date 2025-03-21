@@ -27,6 +27,16 @@ class GroceryListRepository(
             }
         }
 
+    fun getGroceryList(listId: String): Flow<GroceryList> =
+        groceryListDao.getFlowGroceryListWithItems(listId).map { localGroceryList ->
+            GroceryList(
+                id = localGroceryList.id,
+                title = localGroceryList.title,
+                itemCount = localGroceryList.groceryItems.size,
+                items = localGroceryList.groceryItems
+            )
+        }
+
     suspend fun addGroceryList(groceryList: GroceryList) {
         groceryListDao.addGroceryList(groceryList.toLocalGroceryList())
         try {
