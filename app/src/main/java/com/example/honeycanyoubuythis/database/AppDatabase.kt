@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.honeycanyoubuythis.database.user.CurrentUser
 import com.example.honeycanyoubuythis.database.user.CurrentUserDao
+import com.example.honeycanyoubuythis.database.user.ProfilePictureTypeConverter
 
 @Database(entities = [CurrentUser::class], version = 1, exportSchema = false)
+@TypeConverters(ProfilePictureTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun currentUserDao(): CurrentUserDao
