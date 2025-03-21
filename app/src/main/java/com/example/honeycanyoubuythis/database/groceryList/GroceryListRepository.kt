@@ -37,6 +37,8 @@ class GroceryListRepository(
             )
         }
 
+
+
     suspend fun addGroceryList(groceryList: GroceryList) {
         groceryListDao.addGroceryList(groceryList.toLocalGroceryList())
         try {
@@ -72,6 +74,17 @@ class GroceryListRepository(
             ).await()
         } catch (e: Exception) {
             Log.e("GroceryListRepository", "Error removing item from grocery list in firebase.", e)
+        }
+    }
+
+    suspend fun updateGroceryItem(listId:String, groceryItem: GroceryItem) {
+        groceryListDao.updateItemInGroceryList(listId, groceryItem)
+        try {
+            db.collection("groceryList").document(groceryItem.id.toString()).collection("items")
+                .document(groceryItem.id.toString()).set(groceryItem)
+                .await()
+        } catch (e: Exception) {
+            Log.e("GroceryListRepository", "Error updating grocery item in firebase.", e)
         }
     }
 

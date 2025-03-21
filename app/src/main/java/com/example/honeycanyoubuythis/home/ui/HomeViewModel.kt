@@ -56,11 +56,4 @@ class HomeViewModel(
             groceryListRepository.addGroceryList(list)
         }
     }
-
-    fun addGroceryItem(groceryListId: String, itemName: String) {
-        viewModelScope.launch {
-            val groceryItem = GroceryItem(name = itemName)
-            groceryListRepository.addItemToGroceryList(groceryListId, groceryItem)
-        }
-    }
 }

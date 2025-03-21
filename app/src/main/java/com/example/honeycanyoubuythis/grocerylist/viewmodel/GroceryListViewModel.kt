@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 class GroceryListViewModel(
     private val groceryListRepository: GroceryListRepository,
@@ -59,9 +60,18 @@ class GroceryListViewModel(
 
     fun addGroceryItem(itemName: String, itemAmount: Int) {
         viewModelScope.launch {
+            val id = UUID.randomUUID().toString()
+
             val groceryItem =
-                GroceryItem(name = itemName, amount = itemAmount, isChecked = false)
+                GroceryItem(id =id,  name = itemName, amount = itemAmount, isChecked = false)
             groceryListRepository.addItemToGroceryList(currentGroceryListId, groceryItem)
+        }
+    }
+
+    fun updateGroceryItemCheckedState(item: GroceryItem, isChecked: Boolean) {
+        viewModelScope.launch {
+            val updatedItem: GroceryItem = item.copy(isChecked = isChecked)
+            groceryListRepository.updateGroceryItem(currentGroceryListId, updatedItem)
         }
     }
 

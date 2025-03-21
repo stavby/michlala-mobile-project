@@ -8,18 +8,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.honeycanyoubuythis.database.groceryList.GroceryItem
 import com.example.honeycanyoubuythis.databinding.GroceryItemBinding
 
-class GroceryItemAdapter :
+class GroceryItemAdapter(private val listener: GroceryItemListener) :
     ListAdapter<GroceryItem, GroceryItemAdapter.GroceryItemViewHolder>(GroceryItemDiffCallback()) {
 
     class GroceryItemViewHolder(private val binding: GroceryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(groceryItem: GroceryItem) {
+        fun bind(groceryItem: GroceryItem, listener: GroceryItemListener) {
             binding.itemName.text = groceryItem.name
             binding.itemCount.text = groceryItem.amount.toString()
-            if (groceryItem.isChecked) {
-                binding.itemCheckBox.isChecked = true
-            } else {
-                binding.itemCheckBox.isChecked = false
+            binding.itemCheckBox.setOnCheckedChangeListener(null)
+            binding.itemCheckBox.isChecked = groceryItem.isChecked
+
+            binding.itemCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                listener.onItemCheckChanged(groceryItem, isChecked)
+            }
+
+            binding.itemCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                listener.onItemCheckChanged(groceryItem, isChecked)
             }
         }
     }
@@ -32,7 +37,7 @@ class GroceryItemAdapter :
 
     override fun onBindViewHolder(holder: GroceryItemViewHolder, position: Int) {
         val groceryItem = getItem(position)
-        holder.bind(groceryItem)
+        holder.bind(groceryItem, listener)
     }
 
     class GroceryItemDiffCallback : DiffUtil.ItemCallback<GroceryItem>() {
@@ -44,4 +49,8 @@ class GroceryItemAdapter :
             return oldItem == newItem
         }
     }
+}
+
+interface GroceryItemListener {
+    fun onItemCheckChanged(item: GroceryItem, isChecked: Boolean)
 }

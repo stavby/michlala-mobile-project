@@ -15,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.database.AppDatabase
+import com.example.honeycanyoubuythis.database.groceryList.GroceryItem
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
 import com.example.honeycanyoubuythis.databinding.GroceryListFragmentBinding
 import com.example.honeycanyoubuythis.grocerylist.viewmodel.GroceryListViewModel
@@ -26,7 +27,7 @@ import kotlin.text.isNotEmpty
 import kotlin.text.toIntOrNull
 import kotlin.text.trim
 
-class GroceryListFragment : Fragment() {
+class GroceryListFragment : Fragment(), GroceryItemListener {
     private var _binding: GroceryListFragmentBinding? = null
     private val binding get() = _binding!!
     private val args: GroceryListFragmentArgs by navArgs()
@@ -52,7 +53,7 @@ class GroceryListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = GroceryItemAdapter()
+        adapter = GroceryItemAdapter(this)
 
         with(binding) {
             groceryListRecyclerView.adapter = adapter
@@ -105,5 +106,9 @@ class GroceryListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onItemCheckChanged(item: GroceryItem, isChecked: Boolean) {
+        groceryListViewModel.updateGroceryItemCheckedState(item, isChecked)
     }
 }
