@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs.kotlin")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {
@@ -58,6 +60,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
     implementation(libs.gson)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
     ksp(libs.room.compiler)
     implementation(libs.okhttp)
     testImplementation(libs.junit)

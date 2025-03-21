@@ -2,22 +2,34 @@ package com.example.honeycanyoubuythis.home.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.databinding.GroceryListBinding
 import com.example.honeycanyoubuythis.model.GroceryList
 
-class GroceryListAdapter(private var groceryLists: List<GroceryList>) :
-    RecyclerView.Adapter<GroceryListAdapter.GroceryListViewHolder>() {
+class GroceryListsAdapter(private var groceryLists: List<GroceryList>) :
+    RecyclerView.Adapter<GroceryListsAdapter.GroceryListViewHolder>() {
     class GroceryListViewHolder(private val binding: GroceryListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(groceryList: GroceryList) {
-            binding.groceryListTitle.text = groceryList.title
-            binding.groceryListItemCount.text =
-                binding.root.context.getString(
-                    R.string.item_count,
-                    groceryList.itemCount
-                )
+            with(binding){
+                groceryListTitle.text = groceryList.title
+                groceryListItemCount.text =
+                    root.context.getString(
+                        R.string.item_count,
+                        groceryList.itemCount
+                    )
+                root.setOnClickListener {
+                   navigateToGroceryList(groceryList)
+                }
+            }
+        }
+
+        private fun navigateToGroceryList(groceryList: GroceryList) {
+            val action =
+                HomeFragmentDirections.actionHomeFragmentToGroceryListFragment(groceryList)
+            itemView.findNavController().navigate(action)
         }
     }
 
@@ -38,4 +50,6 @@ class GroceryListAdapter(private var groceryLists: List<GroceryList>) :
         groceryLists = newGroceryLists
         notifyDataSetChanged()
     }
+
+
 }

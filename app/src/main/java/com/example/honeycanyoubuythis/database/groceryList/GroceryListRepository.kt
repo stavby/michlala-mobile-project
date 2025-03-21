@@ -9,7 +9,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
 
 class GroceryListRepository(
     private val groceryListDao: GroceryListDao
@@ -27,6 +26,18 @@ class GroceryListRepository(
                 )
             }
         }
+
+    fun getGroceryList(listId: String): Flow<GroceryList> =
+        groceryListDao.getFlowGroceryListWithItems(listId).map { localGroceryList ->
+            GroceryList(
+                id = localGroceryList.id,
+                title = localGroceryList.title,
+                itemCount = localGroceryList.groceryItems.size,
+                items = localGroceryList.groceryItems
+            )
+        }
+
+
 
     suspend fun addGroceryList(groceryList: GroceryList) {
         groceryListDao.addGroceryList(groceryList.toLocalGroceryList())
@@ -48,7 +59,32 @@ class GroceryListRepository(
                 FieldValue.arrayUnion(groceryItem)
             ).await()
         } catch (e: Exception) {
-            Log.e("GroceryListRepository", "Error adding item to grocery list to firebase.", e)
+            Log.e("GroceryListRepository", "Error adding item to grocery list in firebase.", e)
+        }
+    }
+
+    suspend fun removeItemFromGroceryList(groceryListId: String, groceryItem: GroceryItem) {
+        groceryListDao.removeItemFromGroceryList(groceryListId, groceryItem)
+        try {
+            val groceryListRef = db.collection("groceryList").document(groceryListId)
+
+            groceryListRef.update(
+                "items",
+                FieldValue.arrayRemove(groceryItem)
+            ).await()
+        } catch (e: Exception) {
+            Log.e("GroceryListRepository", "Error removing item from grocery list in firebase.", e)
+        }
+    }
+
+    suspend fun updateGroceryItem(listId:String, groceryItem: GroceryItem) {
+        groceryListDao.updateItemInGroceryList(listId, groceryItem)
+        try {
+            db.collection("groceryList").document(groceryItem.id.toString()).collection("items")
+                .document(groceryItem.id.toString()).set(groceryItem)
+                .await()
+        } catch (e: Exception) {
+            Log.e("GroceryListRepository", "Error updating grocery item in firebase.", e)
         }
     }
 
