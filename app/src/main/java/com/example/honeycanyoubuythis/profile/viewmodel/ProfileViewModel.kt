@@ -88,4 +88,8 @@ class ProfileViewModel(private val currentUserDao: CurrentUserDao) : ViewModel()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray()
     }
+
+    fun logout() {
+        auth.signOut()
+    }
 }

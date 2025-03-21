@@ -18,6 +18,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.database.user.CurrentUser
 import com.example.honeycanyoubuythis.databinding.ProfileFragmentBinding
@@ -133,6 +135,11 @@ class ProfileFragment : Fragment() {
 
                 switchEnabledStatus(editableFieldsList)
                 switchShownButtons(buttonList)
+            }
+
+            logoutButton.setOnClickListener {
+                profileViewModel.logout()
+                findNavController().popBackStack(R.id.loginFragment, false)
             }
         }
     }

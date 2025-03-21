@@ -15,4 +15,5 @@
     <string name="cancel">Cancel</string>
     <string name="item_count">%d items</string>
     <string name="weather_api_url">https://api.weatherapi.com/v1/current.json?key=ed534e0312cb47ffa0c133832252003&amp;q=Jerusalem&amp;aqi=no</string>
+    <string name="logout">Logout</string>
 </resources>
