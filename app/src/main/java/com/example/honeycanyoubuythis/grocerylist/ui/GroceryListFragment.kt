@@ -17,6 +17,7 @@ import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.database.groceryList.GroceryItem
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
+import com.example.honeycanyoubuythis.database.user.UserManager
 import com.example.honeycanyoubuythis.databinding.GroceryListFragmentBinding
 import com.example.honeycanyoubuythis.grocerylist.viewmodel.GroceryListViewModel
 import com.example.honeycanyoubuythis.grocerylist.viewmodel.GroceryListViewModelFactory
@@ -45,8 +46,9 @@ class GroceryListFragment : Fragment(), GroceryItemListener {
         val appDatabase = AppDatabase.getInstance(requireContext())
         val groceryListDao = appDatabase.groceryListDao()
         val groceryListRepository = GroceryListRepository(groceryListDao)
+        val currentUserRepository = UserManager.getInstance(requireContext())
         groceryList = args.groceryList
-        val factory = GroceryListViewModelFactory(groceryListRepository, groceryList.id)
+        val factory = GroceryListViewModelFactory(groceryListRepository, currentUserRepository, groceryList.id)
         groceryListViewModel = ViewModelProvider(this, factory)[GroceryListViewModel::class.java]
         return binding.root
     }
@@ -89,10 +91,13 @@ class GroceryListFragment : Fragment(), GroceryItemListener {
         builder.setPositiveButton("Add") { dialog, _ ->
             val itemName = nameInput.text.toString().trim()
             val itemAmount = amountInput.text.toString().toIntOrNull() ?: 1
-
-            if (itemName.isNotEmpty()) {
-                groceryListViewModel.addGroceryItem(itemName, itemAmount)
+            lifecycleScope.launch {
+                val userEmail = groceryListViewModel.getCurrentUserId()?.email ?: ""
+                if (itemName.isNotEmpty()) {
+                    groceryListViewModel.addGroceryItem(itemName, itemAmount, userEmail)
+                }
             }
+
             dialog.dismiss()
         }
 

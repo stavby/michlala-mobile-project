@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.gson)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
     ksp(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

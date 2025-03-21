@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.honeycanyoubuythis.database.groceryList.GroceryItem
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
+import com.example.honeycanyoubuythis.database.user.UserManager
 import com.example.honeycanyoubuythis.model.GroceryList
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -17,6 +18,7 @@ import java.util.UUID
 
 class GroceryListViewModel(
     private val groceryListRepository: GroceryListRepository,
+    private val currentUserRepository: UserManager,
     private val currentGroceryListId: String
 ) : ViewModel() {
     private val _groceryList = MutableStateFlow(GroceryList())
@@ -35,6 +37,8 @@ class GroceryListViewModel(
             }
         }
     }
+
+    suspend fun getCurrentUserId() = currentUserRepository.getUser()
 
     private fun fetchGroceryListFromFirebase() {
         viewModelScope.launch {
@@ -58,13 +62,34 @@ class GroceryListViewModel(
         }
     }
 
-    fun addGroceryItem(itemName: String, itemAmount: Int) {
+    fun addGroceryItem(itemName: String, itemAmount: Int, userEmail: String) {
         viewModelScope.launch {
-            val id = UUID.randomUUID().toString()
+            try {
+                val querySnapshot = db.collection("user")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .await()
 
-            val groceryItem =
-                GroceryItem(id =id,  name = itemName, amount = itemAmount, isChecked = false)
-            groceryListRepository.addItemToGroceryList(currentGroceryListId, groceryItem)
+                if (!querySnapshot.isEmpty) {
+                    for (document in querySnapshot.documents) {
+                        val userId = document.id
+                        val id = UUID.randomUUID().toString()
+
+                        val groceryItem = GroceryItem(
+                            id = id,
+                            name = itemName,
+                            amount = itemAmount,
+                            isChecked = false,
+                            userId = userId
+                        )
+                        groceryListRepository.addItemToGroceryList(currentGroceryListId, groceryItem)
+                    }
+                } else {
+                    Log.e("GroceryListViewModel", "User document not found for email: $userEmail")
+                }
+            } catch (e: Exception) {
+                Log.e("GroceryListViewModel", "Error adding grocery item", e)
+            }
         }
     }
 
