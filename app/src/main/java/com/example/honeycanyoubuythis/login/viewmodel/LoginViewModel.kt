@@ -8,13 +8,13 @@ import com.example.honeycanyoubuythis.database.user.CurrentUser
 import com.example.honeycanyoubuythis.database.user.CurrentUserDao
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.output.ByteArrayOutputStream
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -36,7 +36,7 @@ class LoginViewModel(private val currentUserDao: CurrentUserDao) : ViewModel() {
         }
     }
 
-    suspend fun checkIfLoggedIn(): Boolean  = currentUserDao.getCurrentUser() != null
+    suspend fun checkIfLoggedIn(): Boolean = currentUserDao.getCurrentUser() != null
 
     private suspend fun fetchAndSaveUserData(userId: String) {
         try {
@@ -47,7 +47,7 @@ class LoginViewModel(private val currentUserDao: CurrentUserDao) : ViewModel() {
                 val displayName = userData?.get("displayName") as? String
                 val profilePictureUrl = userData?.get("profilePictureUrl") as? String ?: ""
                 val profilePicture = getProfilePicture(profilePictureUrl)
-                if (email != null && displayName != null){
+                if (email != null && displayName != null) {
                     val user = CurrentUser(
                         id = 1,
                         email = email,
@@ -77,25 +77,29 @@ class LoginViewModel(private val currentUserDao: CurrentUserDao) : ViewModel() {
         return byteArrayOutputStream.toByteArray()
     }
 
-    private suspend fun downloadBitmapFromUrl(imageUrl: String): Bitmap? = withContext(Dispatchers.IO) {
-        var connection: HttpURLConnection? = null
-        try {
-            val url = URL(imageUrl)
-            connection = url.openConnection() as HttpURLConnection
-            connection.connect()
+    private suspend fun downloadBitmapFromUrl(imageUrl: String): Bitmap? =
+        withContext(Dispatchers.IO) {
+            var connection: HttpURLConnection? = null
+            try {
+                val url = URL(imageUrl)
+                connection = url.openConnection() as HttpURLConnection
+                connection.connect()
 
-            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                val inputStream = connection.inputStream
-                BitmapFactory.decodeStream(inputStream)
-            } else {
-                Log.e("LoginViewModel", "Error downloading profile picture: ${connection.responseCode}")
+                if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = connection.inputStream
+                    BitmapFactory.decodeStream(inputStream)
+                } else {
+                    Log.e(
+                        "LoginViewModel",
+                        "Error downloading profile picture: ${connection.responseCode}"
+                    )
+                    null
+                }
+            } catch (e: Exception) {
+                Log.e("LoginViewModel", "Error downloading profile picture", e)
                 null
+            } finally {
+                connection?.disconnect()
             }
-        } catch (e: Exception) {
-            Log.e("LoginViewModel", "Error downloading profile picture", e)
-            null
-        } finally {
-            connection?.disconnect()
         }
-    }
 }
