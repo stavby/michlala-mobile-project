@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
         }
 
         observeGroceryLists()
-        fetchWeather() // Fetch weather when the view is created
+        fetchWeather()
     }
 
     private fun observeGroceryLists() {
