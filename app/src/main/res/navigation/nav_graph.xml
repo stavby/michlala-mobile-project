@@ -28,8 +28,17 @@
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.honeycanyoubuythis.profile.ui.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/profile_fragment"/>
+    <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.honeycanyoubuythis.home.ui.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/home_fragment"/>
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>
