@@ -7,7 +7,9 @@ import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.databinding.GroceryListBinding
 import com.example.honeycanyoubuythis.model.GroceryList
 
-class GroceryListAdapter(private var groceryList: GroceryList) :
+class GroceryListAdapter(
+    private var groceryList: GroceryList,
+) :
     RecyclerView.Adapter<GroceryListAdapter.GroceryListViewHolder>() {
     class GroceryListViewHolder(private val binding: GroceryListBinding) :
         RecyclerView.ViewHolder(binding.root) {

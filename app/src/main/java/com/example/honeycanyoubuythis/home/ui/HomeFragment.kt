@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
 import com.example.honeycanyoubuythis.databinding.HomeFragmentBinding
+
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
