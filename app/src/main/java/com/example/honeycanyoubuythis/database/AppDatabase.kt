@@ -10,11 +10,11 @@ import com.example.honeycanyoubuythis.database.groceryList.GroceryListTypeConver
 import com.example.honeycanyoubuythis.database.groceryList.LocalGroceryList
 import com.example.honeycanyoubuythis.database.user.CurrentUser
 import com.example.honeycanyoubuythis.database.user.CurrentUserDao
+import com.example.honeycanyoubuythis.database.user.ProfilePictureTypeConverter
 
 @Database(entities = [CurrentUser::class, LocalGroceryList::class], version = 1, exportSchema = false)
-@TypeConverters(GroceryListTypeConverters::class)
+@TypeConverters(ProfilePictureTypeConverter::class, GroceryListTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun currentUserDao(): CurrentUserDao
     abstract fun groceryListDao(): GroceryListDao
     companion object {

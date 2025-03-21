@@ -1,6 +1,7 @@
 package com.example.honeycanyoubuythis.home.ui
 
 import android.app.AlertDialog
+import android.util.Log
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.honeycanyoubuythis.R
 import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
 import com.example.honeycanyoubuythis.databinding.HomeFragmentBinding
-
+import com.example.honeycanyoubuythis.model.WeatherResponse
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
@@ -52,6 +59,7 @@ class HomeFragment : Fragment() {
         }
 
         observeGroceryLists()
+        fetchWeather()
     }
 
     private fun observeGroceryLists() {
@@ -85,6 +93,55 @@ class HomeFragment : Fragment() {
         }
 
         builder.show()
+    }
+
+    private fun fetchWeather() {
+        lifecycleScope.launch {
+            try {
+                val weatherData = withContext(Dispatchers.IO) {
+                    getWeather()
+                }
+                updateWeatherUI(weatherData)
+            } catch (e: Exception) {
+                Log.e("HomeFragment", "Error fetching weather", e)
+            }
+        }
+    }
+
+    private fun updateWeatherUI(weatherResponse: WeatherResponse?) {
+        if (weatherResponse != null) {
+            val tempC = weatherResponse.current.tempC
+            val conditionText = weatherResponse.current.condition.text
+
+            val goodWeatherText = getString(R.string.good_weather_text)
+            val badWeatherText = getString(R.string.bad_weather_text)
+
+            val weatherString = "The weather is $tempC°C, $conditionText"
+
+            val updatedWeatherString = if (tempC < 10 || conditionText.contains("rain", ignoreCase = true)) {
+                "$badWeatherText\n$weatherString"
+            } else {
+                "$goodWeatherText\n$weatherString"
+            }
+
+            binding.WeatherText.text = updatedWeatherString
+        } else {
+            Log.e("HomeFragment", "Weather data is null")
+        }
+    }
+
+    private fun getWeather(): WeatherResponse? {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(getString(R.string.weather_api_url))
+            .build()
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw Exception("Network Error: ${response.code}")
+
+            val responseBody = response.body?.string() ?: return null
+            val gson = Gson()
+            return gson.fromJson(responseBody, WeatherResponse::class.java)
+        }
     }
 
     override fun onDestroyView() {
