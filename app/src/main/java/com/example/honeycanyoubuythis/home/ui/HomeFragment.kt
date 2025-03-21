@@ -18,6 +18,7 @@ import com.example.honeycanyoubuythis.database.AppDatabase
 import com.example.honeycanyoubuythis.database.groceryList.GroceryListRepository
 import com.example.honeycanyoubuythis.databinding.HomeFragmentBinding
 import com.example.honeycanyoubuythis.model.GroceryList
+import com.example.honeycanyoubuythis.model.WeatherResponse
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
@@ -134,7 +135,7 @@ class HomeFragment : Fragment() {
     private fun getWeather(): WeatherResponse? {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("https://api.weatherapi.com/v1/current.json?key=ed534e0312cb47ffa0c133832252003&q=Jerusalem&aqi=no")
+            .url(getString(R.string.weather_api_url))
             .build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) throw Exception("Network Error: ${response.code}")
@@ -145,19 +146,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    data class WeatherResponse(
-        val current: CurrentWeather
-    )
-
-    data class CurrentWeather(
-        @SerializedName("temp_c")
-        val tempC: Double,
-        val condition: Condition
-    )
-
-    data class Condition(
-        val text: String,
-    )
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
